@@ -20,8 +20,8 @@ spec:
       - pause:
           duration: "1m"
       - setWeight: 50
-      - pause:  {}
-      #    duration: "2m"
+      - pause:  
+          duration: "2m"
       canaryService: demo-canary
       stableService: demo
       trafficRouting:
