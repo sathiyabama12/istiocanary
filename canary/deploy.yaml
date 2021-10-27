@@ -24,12 +24,12 @@ spec:
       #    duration: "2m"
       canaryService: demo-canary
       stableService: demo
-      trafficRouting:
-        istio:
-           virtualService: 
-            name: istio-vs
-            routes:
-            - primary # At least one route is required
+#       trafficRouting:
+#         istio:
+#            virtualService: 
+#             name: istio-vs
+#             routes:
+#             - primary # At least one route is required
   replicas: 4
   revisionHistoryLimit: 2
   selector:
