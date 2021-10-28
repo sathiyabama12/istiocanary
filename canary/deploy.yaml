@@ -23,7 +23,7 @@ spec:
       - pause:  
           duration: "2m"
       canaryService: demo-canary
-      stableService: demo
+      stableService: demo-stable
 #       trafficRouting:
 #         istio:
 #            virtualService: 
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: demo
-        image: argoproj/rollouts-demo:orange
+        image: argoproj/rollouts-demo:blue     # orange
         imagePullPolicy: Always
         ports:
         - name: web
@@ -60,7 +60,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo
+  name: demo-stable
 spec:
   ports:
   - port: 80
