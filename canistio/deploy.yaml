@@ -80,7 +80,7 @@ spec:
   selector:
     app: demo
   type: Nodeport
----
+# ---
 # apiVersion: argoproj.io/v1alpha1
 # kind: AnalysisTemplate
 # metadata:
