@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: demo
-        image: jlisbz/expressjs-hello               #  argoproj/rollouts-demo:orange  orange blue bad-green
+        image: rgoproj/rollouts-demo:bad-green               #  argoproj/rollouts-demo:orange  orange blue bad-green
         imagePullPolicy: Always
         ports:
         - name: web
