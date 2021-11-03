@@ -27,8 +27,10 @@ spec:
   - name: primary
     route:
     - destination:
-        host: istio-rollout-stable
+        host: real.baeke.info
+        subset: istio-rollout-stable
       weight: 100
     - destination:
-        host: istio-rollout-canary
+        host: real.baeke.info
+        subset: istio-rollout-canary
       weight: 0
