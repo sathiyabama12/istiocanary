@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: istio-rollout
-        image: argoproj/rollouts-demo:blue
+        image: argoproj/rollouts-demo:orange
         ports:
         - name: http
           containerPort: 8080
@@ -50,12 +50,12 @@ spec:
             - primary
       steps:
        # pause indefinitely
-      - setWeight: 10
+      - setWeight: 20
       - pause: {duration: 20s}
       - setWeight: 50
-      - pause: {duration: 20s}
-      - setWeight: 70
       - pause: {}
+#       - setWeight: 70
+#       - pause: {}
 ---
 apiVersion: v1
 kind: Service
