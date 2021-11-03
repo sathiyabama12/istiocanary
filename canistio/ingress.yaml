@@ -24,12 +24,12 @@ spec:
   hosts:
   - real.baeke.info
   http:
-#   - name: primary
+  - name: primary
 #   - match:
 #     - headers:
 #         end-user:
 #           exact: sathya
-  - route:
+    route:
     - destination:
         host: istio-rollout-stable
       weight: 60
