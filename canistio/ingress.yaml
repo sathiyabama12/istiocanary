@@ -22,14 +22,13 @@ spec:
   gateways:
   - istio-rollout-gateway
   hosts:
-  - istio-rollout.apps.argoproj.io
-  - istio-rollout.local
+  - real.baeke.info
   http:
   - name: primary
     route:
     - destination:
         host: istio-rollout-stable
-      weight: 50
+      weight: 100
     - destination:
         host: istio-rollout-canary
-      weight: 50
+      weight: 0
