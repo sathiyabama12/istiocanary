@@ -29,7 +29,7 @@ spec:
 #     - headers:
 #         end-user:
 #           exact: sathya
-    route:
+  - route:
     - destination:
         host: istio-rollout-stable
       weight: 60
