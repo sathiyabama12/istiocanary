@@ -53,8 +53,21 @@ spec:
       - pause: {duration: 20s}
       - setWeight: 50
       - pause: {duration: 20s}
-      - setWeight: 80
-      - pause: {duration: 20s}
+      - setWeight: 70
+      - pause: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-rollout-stable
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: istio-rollout
 ---
 apiVersion: v1
 kind: Service
