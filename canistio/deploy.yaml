@@ -1,105 +1,70 @@
----
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: demo
-  labels:
-    app: demo
+  name: istio-rollout
 spec:
-  strategy:
-    canary:
-#       analysis:
-#         templates:
-#         - templateName: success-rate
-#         startingStep: 2
-#         args:
-#         - name: service-name
-#           value: demo-canary.default.svc.cluster.local
-      steps:
-      - setWeight: 20
-      - pause:
-          duration: "1m"
-      - setWeight: 50
-      - pause:  {}
-#           duration: "2m"
-      canaryService: demo-canary
-      stableService: demo
-      trafficRouting:
-        istio:
-           virtualService: 
-            name: istio-vs
-            routes:
-            - primary # At least one route is required
-  replicas: 4
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: demo
-      version: blue
+      app: istio-rollout
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
-        app: demo
-        version: blue
+        app: istio-rollout
     spec:
       containers:
-      - name: demo
-        image: jlisbz/expressjs-hello               #  argoproj/rollouts-demo:orange  orange blue bad-green
-        imagePullPolicy: Always
+      - name: istio-rollout
+        image: argoproj/rollouts-demo:blue
         ports:
-        - name: web
+        - name: http
           containerPort: 8080
+          protocol: TCP
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "100m"
-          limits:
-            memory: "128Mi"
-            cpu: "140m"
+            memory: 32Mi
+            cpu: 5m
+  strategy:
+    canary:
+      canaryService: istio-rollout-canary
+      stableService: istio-rollout-stable
+      # analysis will be performed in background, while rollout is progressing through its steps
+      # analysis:
+      #   startingStep: 1   # index of step list, of when to start this analysis
+      #   templates:
+      #   - templateName: istio-success-rate
+      #   args:             # arguments allow AnalysisTemplates to be re-used
+      #   - name: service 
+      #     value: canary
+      #   - name: namespace
+      #     valueFrom:
+      #       fieldRef:
+      #         fieldPath: metadata.namespace
+      trafficRouting:
+        istio:
+          virtualService:
+            name: istio-rollout-vsvc
+            routes:
+            - primary
+      steps:
+       # pause indefinitely
+      - setWeight: 10
+      - pause: {duration: 20s}
+      - setWeight: 50
+      - pause: {duration: 20s}
+      - setWeight: 80
+      - pause: {duration: 20s}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo
+  name: istio-rollout-canary
 spec:
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: http
+    protocol: TCP
+    name: http
   selector:
-    app: demo
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: demo-canary
-spec:
-  ports:
-  - port: 80
-    targetPort: 8080
-  selector:
-    app: demo
-
-# ---
-# apiVersion: argoproj.io/v1alpha1
-# kind: AnalysisTemplate
-# metadata:
-#   name: success-rate
-# spec:
-#   args:
-#   - name: service-name
-#   metrics:
-#   - name: success-rate
-#     successCondition: result[0] >= 0.95
-#     interval: 30s
-#     failureLimit: 1
-#     provider:
-#       prometheus:
-#         address: http://prometheus.istio-system.svc.cluster.local:9090
-#         query: |
-#           sum(irate(
-#             istio_requests_total{reporter="source",destination_service=~"{{args.service-name}}",response_code!~"5.*"}[1m]
-#           )) / 
-#           sum(irate(
-#             istio_requests_total{reporter="source",destination_service=~"{{args.service-name}}"}[1m]
-#           ))
+    app: istio-rollout
